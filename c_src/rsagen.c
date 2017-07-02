@@ -117,7 +117,7 @@ rsa_generate_key_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 // openssl rsautl -in test.txt -out test123.enc -pubin -inkey pub_key.der -encrypt
 //
 
-ERL_NIF_TERM //ENCRYPT
+ERL_NIF_TERM
 rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   ErlNifBinary data_bin, keyfile, ret_bin;
   RSA* rsa = RSA_new();
@@ -135,10 +135,12 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
   if (!enif_inspect_binary(env, argv[0], &data_bin)
       || !enif_inspect_binary(env, argv[1], &keyfile)) {
-    RSA_free(rsa);
-	  return enif_make_badarg(env);
+
+        RSA_free(rsa);
+	      return enif_make_badarg(env);
   }
 
+  // FIXME: Delete fopen and load from binary param keyfile with BIO?
   f = fopen("./priv/pub_key.der", "rb");
   //PEM_read_bio_PUBKEY
   //BIO_write(key, &keyfile, sizeof(keyfile))
@@ -149,7 +151,7 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
   i = RSA_public_encrypt(data_bin.size, data_bin.data,
-                         ret_bin.data, rsa, 1);
+                         ret_bin.data, rsa, padding);
 
   RSA_free(rsa);
 
@@ -172,7 +174,7 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 // openssl rsautl -in test123.enc -inkey priv_key.pem -decrypt -passin pass:123456
 //
 
-ERL_NIF_TERM //ENCRYPT
+ERL_NIF_TERM
 rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   ErlNifBinary data_bin, keyfile, ret_bin;
   RSA* rsa = NULL;
@@ -196,7 +198,8 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 	      return enif_make_badarg(env);
   }
 
-  fp = fopen("./priv/priv_key.pem", "r");
+  // FIXME: Delete fopen and load from binary param keyfile with BIO?
+  fp = fopen("./priv/priv_key.pem", "rb");
 
   SSLeay_add_all_ciphers();
   rsa = PEM_read_RSAPrivateKey(fp, NULL, NULL, password);
@@ -204,7 +207,7 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
   i = RSA_private_decrypt(data_bin.size, data_bin.data,
-                         ret_bin.data, rsa, 1);
+                         ret_bin.data, rsa, padding);
 
   if (i > 0) {
     enif_realloc_binary(&ret_bin, i);
