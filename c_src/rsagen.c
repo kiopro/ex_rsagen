@@ -146,12 +146,12 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   rsa = EVP_PKEY_get1_RSA(pkey);
   EVP_PKEY_free(pkey);
 
-  keysize = RSA_size(rsa);
-
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
   i = RSA_public_encrypt(data_bin.size, data_bin.data,
                          ret_bin.data, rsa, 1);
+
+  RSA_free(rsa);
 
   ///
 
