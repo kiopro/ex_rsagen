@@ -87,7 +87,7 @@ defmodule RsaKeys do
   def encrypt_data(<<data::binary>>, pub_key \\ pubkey()) do
     encrypted_data = RsaKeys.encrypt(data, pub_key)
 
-    # save encrypted resault to file
+    # save encrypted result to file
     path = Path.absname("./priv/encrypted.data")
     {:ok, file} = File.open path, [:write]
     IO.binwrite file, encrypted_data
@@ -105,7 +105,7 @@ defmodule RsaKeys do
 
     dencrypted_data = RsaKeys.decrypt(data, priv_key, pwd)
 
-    # save decrypted resault to file
+    # save decrypted result to file
     path = Path.absname("./priv/decrypted.data")
     {:ok, file} = File.open path, [:write]
     IO.binwrite file, dencrypted_data
