@@ -140,6 +140,8 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   }
 
   f = fopen("./priv/pub_key.der", "rb");
+  //PEM_read_bio_PUBKEY
+  //BIO_write(key, &keyfile, sizeof(keyfile))
   pkey = PEM_read_PUBKEY(f, NULL, NULL, NULL);
   rsa = EVP_PKEY_get1_RSA(pkey);
   EVP_PKEY_free(pkey);

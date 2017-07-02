@@ -64,14 +64,26 @@ defmodule RsaKeys do
     {:ok, priv_key, pub_key}
   end
 
+  @doc """
+  Get public key from file
+  """
+  @spec pubkey() :: Binary.t
   def pubkey do
     File.read!("./priv/pub_key.der")
   end
 
+  @doc """
+  Get private key from file
+  """
+  @spec privkey() :: Binary.t
   def privkey do
     File.read!("./priv/priv_key.pem")
   end
 
+  @doc """
+  Encrypt data with data, public key and save to file
+  """
+  @spec encrypt_data(Binary.t, Binary.t) :: atom
   def encrypt_data(data, pub_key \\ pubkey()) do
     encrypted_data = RsaKeys.encrypt(data, pub_key)
 
@@ -81,6 +93,10 @@ defmodule RsaKeys do
     File.close file
   end
 
+  @doc """
+  Decrypt data with encrypted data, password, private key and save to file
+  """
+  @spec decrypt_data(Binary.t, String.t, Binary.t) :: atom
   def decrypt_data(data, password, priv_key \\ privkey()) do
     pwd = String.to_char_list(password)
 
@@ -91,12 +107,4 @@ defmodule RsaKeys do
     IO.binwrite file, dencrypted_data
     File.close file
   end
-
-  defp url_encode64({:ok, bytes_to_encode}) do
-    url_encode64(bytes_to_encode)
-  end
-  defp url_encode64(bytes_to_encode) do
-    {:ok, Base.url_encode64(bytes_to_encode)}
-  end
-
 end
