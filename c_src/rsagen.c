@@ -146,6 +146,8 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   rsa = EVP_PKEY_get1_RSA(pkey);
   EVP_PKEY_free(pkey);
 
+  keysize = RSA_size(rsa);
+
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
   i = RSA_public_encrypt(data_bin.size, data_bin.data,
@@ -202,9 +204,15 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
   i = RSA_private_decrypt(data_bin.size, data_bin.data,
-                         ret_bin.data, rsa, padding);
+                         ret_bin.data, rsa, 1);
+
+  if (i > 0) {
+    enif_realloc_binary(&ret_bin, i);
+  }
 
   ///
+
+  RSA_free(rsa);
 
   if (i > 0) {
     return enif_make_binary(env,&ret_bin);
