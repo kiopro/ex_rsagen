@@ -88,7 +88,7 @@ defmodule RsaKeys do
     encrypted_data = RsaKeys.encrypt(data, pub_key)
 
     # save encrypted result to file
-    save_to_file(encrypted_data, "encrypted.data")
+    save_to_file(data, "encrypted.data")
 
     encrypted_data
   end
@@ -102,7 +102,7 @@ defmodule RsaKeys do
     dencrypted_data = RsaKeys.decrypt(data, priv_key, pwd)
 
     # save decrypted result to file
-    save_to_file(encrypted_data, "decrypted.data")
+    save_to_file(data, "decrypted.data")
 
     dencrypted_data
   end
