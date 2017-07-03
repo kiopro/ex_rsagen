@@ -19,7 +19,7 @@ defmodule RsaKeysTest do
     password = "12345"
     test_data = "test data for encrypt/decrypt!"
 
-    assert {:ok, pub_key, priv_key} = RsaKeys.generate_keys(password)
+    assert {:ok, priv_key, pub_key} = RsaKeys.generate_keys(password)
     data = RsaKeys.encrypt_data(test_data, pub_key)
     assert test_data == RsaKeys.decrypt_data(data, password, priv_key)
   end

@@ -41,18 +41,6 @@ static int upgrade(ErlNifEnv* env, void** priv_data, void** old_priv_data,
     return 0;
 }
 
-static int binary_to_string(ErlNifEnv* env, ERL_NIF_TERM bin_term, char **bin_str)
-{
-  ErlNifBinary bin_bin;
-  char *bin_buf = NULL;
-
-  *bin_str = NULL;
-
-  if(!enif_inspect_binary(env, bin_term, &bin_bin) || NULL == (bin_buf = (char*)malloc(bin_bin.size))) return 0;
-  *bin_str = strncpy(bin_buf, (char*)bin_bin.data, bin_bin.size);
-  return 1;
-}
-
 //////////////////////////////////////
 //////////////////////////////////////
 //////////////////////////////////////
@@ -126,7 +114,7 @@ rsa_generate_key_nif(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
 //
 // encrypt
-// openssl rsautl -in test.txt -out test123.enc -pubin -inkey pub_key.der -encrypt
+// openssl rsautl -in test.txt -out encrypted.data -pubin -inkey pub_key.der -encrypt
 //
 
 ERL_NIF_TERM
@@ -158,11 +146,7 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   // load rsa
   //
 
-  char *keyfile_string;
-  binary_to_string(env, argv[1], &keyfile_string);
-
-  BIO* bio = BIO_new_mem_buf((void*)keyfile_string, -1 );
-  BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL );
+  BIO* bio = BIO_new_mem_buf((void*)keyfile.data, -1);
   rsa = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
 
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
@@ -182,7 +166,7 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
 //
 // decrypt
-// openssl rsautl -in test123.enc -inkey priv_key.pem -decrypt -passin pass:123456
+// openssl rsautl -in encrypted.data -inkey priv_key.pem -decrypt -passin pass:12345
 //
 
 ERL_NIF_TERM
@@ -209,11 +193,9 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 	      return enif_make_badarg(env);
   }
 
-  // FIXME: Delete fopen and load from binary param keyfile with BIO?
-  fp = fopen("./priv/priv_key.pem", "rb");
-
+  BIO* bio = BIO_new_mem_buf((void*)keyfile.data, -1);
   SSLeay_add_all_ciphers();
-  rsa = PEM_read_RSAPrivateKey(fp, NULL, NULL, password);
+  rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, password);
 
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
