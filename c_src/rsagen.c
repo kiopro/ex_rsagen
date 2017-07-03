@@ -151,6 +151,7 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
+  // encrypt
   i = RSA_public_encrypt(data_bin.size, data_bin.data,
                          ret_bin.data, rsa, padding);
 
@@ -182,8 +183,11 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   BIO *key = BIO_new(BIO_s_mem());
   EVP_PKEY *pkey = NULL;
   char password[2048];
-
   padding = RSA_PKCS1_PADDING; // 1
+
+  //
+  // load binarys
+  //
 
   if (!enif_inspect_binary(env, argv[0], &data_bin)
       || !enif_inspect_binary(env, argv[1], &keyfile)
@@ -193,12 +197,17 @@ rsa_decrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 	      return enif_make_badarg(env);
   }
 
+  //
+  // load rsa
+  //
+
   BIO* bio = BIO_new_mem_buf((void*)keyfile.data, -1);
   SSLeay_add_all_ciphers();
   rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, password);
 
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
+  // decrypt
   i = RSA_private_decrypt(data_bin.size, data_bin.data,
                          ret_bin.data, rsa, padding);
 
