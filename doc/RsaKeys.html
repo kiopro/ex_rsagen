@@ -8,6 +8,8 @@
     <title>RsaKeys – RsaKeys v0.1.0</title>
     <link rel="stylesheet" href="dist/app-88251e7c81.css" />
     
+      <link rel="canonical" href="https://hexdocs.pm/ex_rsagen/RsaKeys.html" />
+    
     <script src="dist/sidebar_items.js"></script>
   </head>
   <body data-type="modules">
@@ -296,21 +298,20 @@
   
   <section class="docstring">
     <p>generate_keys(String // password)</p>
-<h1>## Examples</h1>
-<p>#</p>
-<h1>iex&gt; RsaKeys.generate_keys(“123123”)</h1>
-<h1>{:ok,</h1>
-<h1>“——-BEGIN RSA PRIVATE KEY——-</h1>
-<h1>Proc-Type: 4,ENCRYPTED</h1>
-<h1>DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06</h1>
-<p>#</p>
-<h1>vUI5BtcWw88KE0q…….</h1>
-<h1>——-END RSA PRIVATE KEY——-</h1>
-<h1>“,</h1>
-<h1>“——-BEGIN PUBLIC KEY——-</h1>
-<h1>MIIBIjANB…….</h1>
-<h1>——-END PUBLIC KEY——-</h1>
-<h1>“}</h1>
+<h2>Examples</h2>
+<pre><code class="iex elixir">iex&gt; RsaKeys.generate_keys(&quot;123123&quot;)
+{:ok,
+  &quot;-----BEGIN RSA PRIVATE KEY-----
+  Proc-Type: 4,ENCRYPTED
+  DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06
+
+  vUI5BtcWw88KE0q.......
+  -----END RSA PRIVATE KEY-----
+  &quot;,
+  &quot;-----BEGIN PUBLIC KEY-----
+  MIIBIjANB.......
+  -----END PUBLIC KEY-----
+  &quot;}</code></pre>
 
   </section>
 </div>

@@ -15,6 +15,8 @@ defmodule RsaKeys.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     description: description(),
+     package: package(),
      deps: deps()]
   end
 
@@ -27,5 +29,20 @@ defmodule RsaKeys.Mixfile do
   defp deps do
     [{:earmark, "~> 0.1", only: :dev},
     {:ex_doc, "~> 0.11", only: :dev}]
+  end
+
+  defp description do
+    """
+    Crypto module with NIF's for generate RSA keys with DES3 + encrypt/decrypt data
+    """
+  end
+
+  defp package do
+    [
+      name: "ex_rsagen",
+      files: ["Makefile", "lib", "c_src", "mix.exs", "README*"],
+      maintainers: ["kiopro"],
+      licenses: ["MIT"],
+      links: %{"Github" => "https://github.com/kiopro/ex_rsagen"}]
   end
 end

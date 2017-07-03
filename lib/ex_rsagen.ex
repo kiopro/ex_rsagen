@@ -35,49 +35,28 @@ defmodule RsaKeys do
   @doc """
   generate_keys(String // password)
 
-  # ## Examples
-  #
-  #     iex> RsaKeys.generate_keys("123123")
-  #     {:ok,
-  #       "-----BEGIN RSA PRIVATE KEY-----
-  #       Proc-Type: 4,ENCRYPTED
-  #       DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06
-  #
-  #       vUI5BtcWw88KE0q.......
-  #       -----END RSA PRIVATE KEY-----
-  #       ",
-  #       "-----BEGIN PUBLIC KEY-----
-  #       MIIBIjANB.......
-  #       -----END PUBLIC KEY-----
-  #       "}
+  ## Examples
+
+      iex> RsaKeys.generate_keys("123123")
+      {:ok,
+        "-----BEGIN RSA PRIVATE KEY-----
+        Proc-Type: 4,ENCRYPTED
+        DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06
+
+        vUI5BtcWw88KE0q.......
+        -----END RSA PRIVATE KEY-----
+        ",
+        "-----BEGIN PUBLIC KEY-----
+        MIIBIjANB.......
+        -----END PUBLIC KEY-----
+        "}
 
   """
 
   @spec generate_keys(String.t) :: {atom, Binary.t, Binary.t}
   def generate_keys(password) do
     pwd = String.to_char_list(password)
-    {:ok, priv_key, pub_key} = RsaKeys.rsagen(pwd)
-
-    File.write("./priv/priv_key.pem", priv_key, [:binary])
-    File.write("./priv/pub_key.der", pub_key, [:binary])
-
-    {:ok, priv_key, pub_key}
-  end
-
-  @doc """
-  Get public key from file
-  """
-  @spec pubkey() :: Binary.t
-  def pubkey do
-    File.read!("./priv/pub_key.der")
-  end
-
-  @doc """
-  Get private key from file
-  """
-  @spec privkey() :: Binary.t
-  def privkey do
-    File.read!("./priv/priv_key.pem")
+    RsaKeys.rsagen(pwd)
   end
 
   @doc """
@@ -86,7 +65,6 @@ defmodule RsaKeys do
   @spec encrypt_data(Binary.t, Binary.t) :: Binary.t
   def encrypt_data(data, pub_key \\ pubkey()) do
     RsaKeys.encrypt(data, pub_key)
-    |> save_to_file("encrypted.data")
   end
 
   @doc """
@@ -96,7 +74,6 @@ defmodule RsaKeys do
   def decrypt_data(data, password, priv_key \\ privkey()) do
     pwd = String.to_char_list(password)
     RsaKeys.decrypt(data, priv_key, pwd)
-    |> save_to_file("decrypted.data")
   end
 
   @doc """
