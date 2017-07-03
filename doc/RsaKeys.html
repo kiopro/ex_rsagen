@@ -99,7 +99,7 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#decrypt_data/3">decrypt_data(data, password, priv_key \\ privkey())</a>
+    <a href="#decrypt_data/3">decrypt_data(data, password, priv_key)</a>
   </div>
   
     <div class="summary-synopsis"><p>Decrypt data with encrypted data, password, private key and save to file</p>
@@ -117,7 +117,7 @@
 </div>
 <div class="summary-row">
   <div class="summary-signature">
-    <a href="#encrypt_data/2">encrypt_data(data, pub_key \\ pubkey())</a>
+    <a href="#encrypt_data/2">encrypt_data(data, pub_key)</a>
   </div>
   
     <div class="summary-synopsis"><p>Encrypt data with data, public key and save to file</p>
@@ -139,24 +139,6 @@
   </div>
   
     <div class="summary-synopsis"><p>Loading nif functions</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#privkey/0">privkey()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Get private key from file</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#pubkey/0">pubkey()</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Get public key from file</p>
 </div>
   
 </div>
@@ -219,7 +201,7 @@
     <a href="#decrypt_data/3" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">decrypt_data(data, password, priv_key \\ privkey())</span>
+    <span class="signature">decrypt_data(data, password, priv_key)</span>
     
     
   </div>
@@ -228,7 +210,7 @@
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">decrypt_data(Binary.t, <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>, Binary.t) :: Binary.t</code></pre>
+          <pre><code class="elixir">decrypt_data(Binary, String, Binary) :: Binary</code></pre>
         
       </div>
     </div>
@@ -258,7 +240,7 @@
     <a href="#encrypt_data/2" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">encrypt_data(data, pub_key \\ pubkey())</span>
+    <span class="signature">encrypt_data(data, pub_key)</span>
     
     
   </div>
@@ -267,7 +249,7 @@
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">encrypt_data(Binary.t, Binary.t) :: Binary.t</code></pre>
+          <pre><code class="elixir">encrypt_data(Binary, Binary) :: Binary</code></pre>
         
       </div>
     </div>
@@ -291,27 +273,13 @@
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">generate_keys(<a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: {atom, Binary.t, Binary.t}</code></pre>
+          <pre><code class="elixir">generate_keys(String) :: {atom, Binary, Binary}</code></pre>
         
       </div>
     </div>
   
   <section class="docstring">
     <p>generate_keys(String // password)</p>
-<h2>Examples</h2>
-<pre><code class="iex elixir">iex&gt; RsaKeys.generate_keys(&quot;123123&quot;)
-{:ok,
-  &quot;-----BEGIN RSA PRIVATE KEY-----
-  Proc-Type: 4,ENCRYPTED
-  DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06
-
-  vUI5BtcWw88KE0q.......
-  -----END RSA PRIVATE KEY-----
-  &quot;,
-  &quot;-----BEGIN PUBLIC KEY-----
-  MIIBIjANB.......
-  -----END PUBLIC KEY-----
-  &quot;}</code></pre>
 
   </section>
 </div>
@@ -327,54 +295,6 @@
   
   <section class="docstring">
     <p>Loading nif functions</p>
-
-  </section>
-</div>
-<div class="detail" id="privkey/0">
-  <div class="detail-header">
-    <a href="#privkey/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">privkey()</span>
-    
-    
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
-        
-          <pre><code class="elixir">privkey :: Binary.t</code></pre>
-        
-      </div>
-    </div>
-  
-  <section class="docstring">
-    <p>Get private key from file</p>
-
-  </section>
-</div>
-<div class="detail" id="pubkey/0">
-  <div class="detail-header">
-    <a href="#pubkey/0" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">pubkey()</span>
-    
-    
-  </div>
-  
-    <div class="specs">
-      <h4 class="specs-title">Specs</h4>
-      <div class="specs-list">
-        
-          <pre><code class="elixir">pubkey :: Binary.t</code></pre>
-        
-      </div>
-    </div>
-  
-  <section class="docstring">
-    <p>Get public key from file</p>
 
   </section>
 </div>
@@ -407,7 +327,7 @@
       <h4 class="specs-title">Specs</h4>
       <div class="specs-list">
         
-          <pre><code class="elixir">save_to_file(Binary.t, <a href="http://elixir-lang.org/docs/stable/elixir/String.html#t:t/0">String.t</a>) :: Binary.t</code></pre>
+          <pre><code class="elixir">save_to_file(Binary, String) :: Binary</code></pre>
         
       </div>
     </div>
