@@ -63,7 +63,7 @@ defmodule RsaKeys do
   Encrypt data with data, public key and save to file
   """
   @spec encrypt_data(Binary, Binary) :: Binary
-  def encrypt_data(data, pub_key \\ pubkey()) do
+  def encrypt_data(data, pub_key) do
     RsaKeys.encrypt(data, pub_key)
   end
 
@@ -71,7 +71,7 @@ defmodule RsaKeys do
   Decrypt data with encrypted data, password, private key and save to file
   """
   @spec decrypt_data(Binary, String, Binary) :: Binary
-  def decrypt_data(data, password, priv_key \\ privkey()) do
+  def decrypt_data(data, password, priv_key) do
     pwd = String.to_char_list(password)
     RsaKeys.decrypt(data, priv_key, pwd)
   end
