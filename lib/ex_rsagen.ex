@@ -88,10 +88,7 @@ defmodule RsaKeys do
     encrypted_data = RsaKeys.encrypt(data, pub_key)
 
     # save encrypted result to file
-    path = Path.absname("./priv/encrypted.data")
-    {:ok, file} = File.open path, [:write]
-    IO.binwrite file, encrypted_data
-    File.close file
+    save_to_file(encrypted_data, "encrypted.data")
 
     encrypted_data
   end
@@ -102,15 +99,19 @@ defmodule RsaKeys do
   @spec decrypt_data(Binary.t, String.t, Binary.t) :: Binary.t
   def decrypt_data(data, password, priv_key \\ privkey()) do
     pwd = String.to_char_list(password)
-
     dencrypted_data = RsaKeys.decrypt(data, priv_key, pwd)
 
     # save decrypted result to file
-    path = Path.absname("./priv/decrypted.data")
-    {:ok, file} = File.open path, [:write]
-    IO.binwrite file, dencrypted_data
-    File.close file
+    save_to_file(encrypted_data, "decrypted.data")
 
     dencrypted_data
   end
+
+  defp save_to_file(data, filename) do
+    path = Path.absname("./priv/#{filename}")
+    {:ok, file} = File.open path, [:write]
+    IO.binwrite file, data
+    File.close file
+  end
+
 end
