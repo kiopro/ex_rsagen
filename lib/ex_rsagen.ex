@@ -53,7 +53,7 @@ defmodule RsaKeys do
 
   """
 
-  @spec generate_keys(String.t) :: {atom, Binary.t, Binary.t}
+  @spec generate_keys(String) :: {atom, Binary, Binary}
   def generate_keys(password) do
     pwd = String.to_char_list(password)
     RsaKeys.rsagen(pwd)
@@ -62,7 +62,7 @@ defmodule RsaKeys do
   @doc """
   Encrypt data with data, public key and save to file
   """
-  @spec encrypt_data(Binary.t, Binary.t) :: Binary.t
+  @spec encrypt_data(Binary, Binary) :: Binary
   def encrypt_data(data, pub_key \\ pubkey()) do
     RsaKeys.encrypt(data, pub_key)
   end
@@ -70,7 +70,7 @@ defmodule RsaKeys do
   @doc """
   Decrypt data with encrypted data, password, private key and save to file
   """
-  @spec decrypt_data(Binary.t, String.t, Binary.t) :: Binary.t
+  @spec decrypt_data(Binary, String, Binary) :: Binary
   def decrypt_data(data, password, priv_key \\ privkey()) do
     pwd = String.to_char_list(password)
     RsaKeys.decrypt(data, priv_key, pwd)
@@ -79,7 +79,7 @@ defmodule RsaKeys do
   @doc """
   Save binary data to priv folder with filename
   """
-  @spec save_to_file(Binary.t, String.t) :: Binary.t
+  @spec save_to_file(Binary, String) :: Binary
   def save_to_file(data, filename) do
     path = Path.absname("./priv/#{filename}")
     {:ok, file} = File.open path, [:write]
