@@ -99,7 +99,11 @@ defmodule RsaKeys do
     |> save_to_file("decrypted.data")
   end
 
-  defp save_to_file(data, filename) do
+  @doc """
+  Save binary data to priv folder with filename
+  """
+  @spec save_to_file(Binary.t, String.t) :: Binary.t
+  def save_to_file(data, filename) do
     path = Path.absname("./priv/#{filename}")
     {:ok, file} = File.open path, [:write]
     IO.binwrite file, data
