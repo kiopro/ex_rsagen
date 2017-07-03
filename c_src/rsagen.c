@@ -41,6 +41,18 @@ static int upgrade(ErlNifEnv* env, void** priv_data, void** old_priv_data,
     return 0;
 }
 
+static int binary_to_string(ErlNifEnv* env, ERL_NIF_TERM bin_term, char **bin_str)
+{
+  ErlNifBinary bin_bin;
+  char *bin_buf = NULL;
+
+  *bin_str = NULL;
+
+  if(!enif_inspect_binary(env, bin_term, &bin_bin) || NULL == (bin_buf = (char*)malloc(bin_bin.size))) return 0;
+  *bin_str = strncpy(bin_buf, (char*)bin_bin.data, bin_bin.size);
+  return 1;
+}
+
 //////////////////////////////////////
 //////////////////////////////////////
 //////////////////////////////////////
@@ -126,12 +138,14 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
   int rsa_inlen, keyformat = FORMAT_PEM, keysize, ret = 1;
   int rsa_outlen = 0;
   unsigned char *rsa_in = NULL, *rsa_out = NULL, pad = RSA_PKCS1_PADDING;
-  FILE *f;
-
-  BIO *key = BIO_new(BIO_s_mem());
+  FILE *f = tmpfile();
+  BIO *cert = BIO_new(BIO_s_mem());
   EVP_PKEY *pkey = NULL;
-
   padding = RSA_PKCS1_PADDING; // 1
+
+  //
+  // load binarys
+  //
 
   if (!enif_inspect_binary(env, argv[0], &data_bin)
       || !enif_inspect_binary(env, argv[1], &keyfile)) {
@@ -140,13 +154,16 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
 	      return enif_make_badarg(env);
   }
 
-  // FIXME: Delete fopen and load from binary param keyfile with BIO?
-  f = fopen("./priv/pub_key.der", "rb");
-  //PEM_read_bio_PUBKEY
-  //BIO_write(key, &keyfile, sizeof(keyfile))
-  pkey = PEM_read_PUBKEY(f, NULL, NULL, NULL);
-  rsa = EVP_PKEY_get1_RSA(pkey);
-  EVP_PKEY_free(pkey);
+  //
+  // load rsa
+  //
+
+  char *keyfile_string;
+  binary_to_string(env, argv[1], &keyfile_string);
+
+  BIO* bio = BIO_new_mem_buf((void*)keyfile_string, -1 );
+  BIO_set_flags( bio, BIO_FLAGS_BASE64_NO_NL );
+  rsa = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
 
   enif_alloc_binary(RSA_size(rsa), &ret_bin);
 
@@ -154,12 +171,6 @@ rsa_encrypt(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]) {
                          ret_bin.data, rsa, padding);
 
   RSA_free(rsa);
-
-  ///
-
-  //return enif_make_int(env, i);
-  //return enif_make_string(env, (const char *)ret_bin.data, ERL_NIF_LATIN1);
-  //return enif_make_int(env, ret_bin.size);
 
   if (i > 0) {
     return enif_make_binary(env,&ret_bin);
