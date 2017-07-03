@@ -34,25 +34,7 @@ defmodule RsaKeys do
 
   @doc """
   generate_keys(String // password)
-
-  ## Examples
-
-      iex> RsaKeys.generate_keys("123123")
-      {:ok,
-        "-----BEGIN RSA PRIVATE KEY-----
-        Proc-Type: 4,ENCRYPTED
-        DEK-Info: DES-EDE3-CBC,3123FE7FDE3D2D06
-
-        vUI5BtcWw88KE0q.......
-        -----END RSA PRIVATE KEY-----
-        ",
-        "-----BEGIN PUBLIC KEY-----
-        MIIBIjANB.......
-        -----END PUBLIC KEY-----
-        "}
-
   """
-
   @spec generate_keys(String) :: {atom, Binary, Binary}
   def generate_keys(password) do
     pwd = String.to_char_list(password)
